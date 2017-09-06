@@ -22,4 +22,5 @@
     <string name="flash_auto">Flash auto</string>
     <string name="flash_off">Flash off</string>
     <string name="flash_on">Flash on</string>
+    <string name="camera_and_video_text">Hold for video, tab for photo</string>
 </resources>
