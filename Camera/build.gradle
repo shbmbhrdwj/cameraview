@@ -13,6 +13,7 @@
 // limitations under the License.
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven' // ADD THIS
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -50,4 +51,29 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
         exclude module: 'support-annotations'
     }
+}
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'Camera'
+    orgName = 'shubhapp'
+
+    publishedGroupId = 'com.github.shubhapp'
+    libraryName = 'Camera'
+    artifact = 'Camera'
+
+    libraryDescription = 'Camera'
+
+    siteUrl = 'https://github.com/shubhapp/cameraview'
+    gitUrl = 'https://github.com/shubhapp/cameraview.git'
+
+    libraryVersion = 1.0
+
+    developerId = 'shubhapp'
+    developerName = 'shubhapp'
+    developerEmail = 'shubham.k.tyagi@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
 }
