@@ -238,6 +238,11 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         @Override
+        public void onVideoTaken(File videoFile) {
+            
+        }
+
+        @Override
         public void onCameraOpened(CameraView cameraView) {
             Log.d(TAG, "onCameraOpened");
         }

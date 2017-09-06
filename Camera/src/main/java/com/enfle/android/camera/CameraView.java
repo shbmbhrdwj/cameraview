@@ -422,11 +422,11 @@ public class CameraView extends FrameLayout {
         mImpl.endVideo();
     }
 
-    public void setFilePath(String filePath){
+    public void setFilePath(String filePath) {
         mImpl.setFilePath(filePath);
     }
 
-    public void setVideoQuaity(int quaity){
+    public void setVideoQuaity(int quaity) {
         mImpl.setVideoQuality(quaity);
     }
 
@@ -493,7 +493,6 @@ public class CameraView extends FrameLayout {
                             }
                         }
                     }
-
                 }
             });
 
@@ -508,7 +507,9 @@ public class CameraView extends FrameLayout {
 
         @Override
         public void onVideoTaken(File videoFile) {
-
+            for (Callback callback : mCallbacks) {
+                callback.onVideoTaken(videoFile);
+            }
         }
 
         public void reserveRequestLayoutOnOpen() {

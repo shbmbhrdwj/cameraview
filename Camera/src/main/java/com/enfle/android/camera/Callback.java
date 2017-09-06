@@ -16,6 +16,8 @@
 
 package com.enfle.android.camera;
 
+import java.io.File;
+
 /**
  * Callback for monitoring events about {@link CameraView}.
  */
@@ -49,4 +51,6 @@ public abstract class Callback {
     public void onVideoStarted(String nextVideoAbsolutePath) {
 
     }
+
+    public abstract void onVideoTaken(File videoFile);
 }
