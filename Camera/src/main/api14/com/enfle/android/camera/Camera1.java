@@ -245,7 +245,7 @@ class Camera1 extends CameraViewImpl {
         }
     }
 
-    void takePictureInternal() {
+    private void takePictureInternal() {
         if (!isPictureCaptureInProgress.getAndSet(true)) {
             mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
                 @Override

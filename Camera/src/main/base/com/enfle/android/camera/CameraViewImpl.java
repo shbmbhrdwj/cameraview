@@ -99,6 +99,8 @@ abstract class CameraViewImpl {
         void onVideoStarted(String nextVideoAbsolutePath);
 
         void onVideoTaken(File videoFile);
+
+        void onCameraStartFailed();
     }
 
     protected CamcorderProfile getCamcorderProfile(@VideoQuality int videoQuality, int cameraId) {

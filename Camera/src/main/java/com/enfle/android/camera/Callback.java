@@ -21,7 +21,6 @@ import java.io.File;
 /**
  * Callback for monitoring events about {@link CameraView}.
  */
-@SuppressWarnings("UnusedParameters")
 public abstract class Callback {
 
     /**
@@ -42,15 +41,33 @@ public abstract class Callback {
 
     /**
      * Called when a picture is taken.
-     *  @param cameraView The associated {@link CameraView}.
+     *
+     * @param cameraView The associated {@link CameraView}.
      * @param data       JPEG data.
      */
     public void onPictureTaken(CameraView cameraView, String data) {
     }
 
-    public void onVideoStarted(String nextVideoAbsolutePath) {
+    /**
+     * Called when a video capture session started
+     *
+     * @param videoFilePath The associated {@link CameraView}.
+     */
+    public void onVideoStarted(String videoFilePath) {
 
     }
 
+    /**
+     * Called when a video capture session completed
+     *
+     * @param videoFile The associated {@link CameraView}.
+     */
     public abstract void onVideoTaken(File videoFile);
+
+    /**
+     * Called when a camera preview failed
+     */
+    public void onCameraStartFailed() {
+
+    }
 }

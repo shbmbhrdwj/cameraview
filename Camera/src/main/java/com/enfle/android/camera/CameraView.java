@@ -512,6 +512,13 @@ public class CameraView extends FrameLayout {
             }
         }
 
+        @Override
+        public void onCameraStartFailed() {
+            for (Callback callback : mCallbacks) {
+                callback.onCameraStartFailed();
+            }
+        }
+
         public void reserveRequestLayoutOnOpen() {
             mRequestLayoutOnOpen = true;
         }

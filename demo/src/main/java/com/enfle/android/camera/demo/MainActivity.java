@@ -233,13 +233,13 @@ public class MainActivity extends AppCompatActivity implements
     private Callback mCallback = new Callback() {
 
         @Override
-        public void onVideoStarted(String nextVideoAbsolutePath) {
+        public void onVideoStarted(String videoFilePath) {
             isVideoStarted = true;
         }
 
         @Override
         public void onVideoTaken(File videoFile) {
-            
+
         }
 
         @Override
@@ -257,5 +257,9 @@ public class MainActivity extends AppCompatActivity implements
 
         }
 
+        @Override
+        public void onCameraStartFailed() {
+            super.onCameraStartFailed();
+        }
     };
 }

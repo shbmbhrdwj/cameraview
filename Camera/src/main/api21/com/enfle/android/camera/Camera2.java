@@ -104,8 +104,7 @@ class Camera2 extends CameraViewImpl {
 
     };
 
-    private final CameraCaptureSession.StateCallback mSessionCallback =
-            new CameraCaptureSession.StateCallback() {
+    private final CameraCaptureSession.StateCallback mSessionCallback = new CameraCaptureSession.StateCallback() {
 
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
@@ -116,12 +115,9 @@ class Camera2 extends CameraViewImpl {
                     updateAutoFocus();
                     updateFlash();
                     try {
-                        mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(),
-                                mCaptureCallback, null);
+                        mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
                     } catch (CameraAccessException e) {
-                        Log.e(TAG,
-                                "Failed to start camera preview because it couldn't access camera",
-                                e);
+                        Log.e(TAG, "Failed to start camera preview because it couldn't access camera", e);
                     } catch (IllegalStateException e) {
                         Log.e(TAG, "Failed to start camera preview.", e);
                     }
@@ -130,6 +126,9 @@ class Camera2 extends CameraViewImpl {
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession session) {
                     Log.e(TAG, "Failed to configure capture session.");
+                    if (mCallback != null) {
+                        mCallback.onCameraStartFailed();
+                    }
                 }
 
                 @Override
@@ -368,13 +367,6 @@ class Camera2 extends CameraViewImpl {
         }
     }
 
-    private String getVideoFilePath(Context context) {
-        final File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        return (dir == null ? "" : (dir.getAbsolutePath() + "/")) +
-                "video" + System.currentTimeMillis()
-                + ".mp4";
-    }
-
     private void setUpMediaRecorder(Context context) throws IOException {
         Size previewSize = chooseOptimalSize();
         if (TextUtils.isEmpty(filePath)) {
@@ -395,8 +387,7 @@ class Camera2 extends CameraViewImpl {
         mMediaRecorder.setVideoSize(previewSize.getWidth(), previewSize.getHeight());
         File mVideoFile = new File(filePath);
         mMediaRecorder.setOutputFile(mVideoFile.getAbsolutePath());
-        int sensorOrientation = mCameraCharacteristics.get(
-                CameraCharacteristics.SENSOR_ORIENTATION);
+        int sensorOrientation = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
         mMediaRecorder.setOrientationHint(sensorOrientation);
         mMediaRecorder.prepare();
     }
@@ -443,8 +434,11 @@ class Camera2 extends CameraViewImpl {
             mCamera.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
 
                 @Override
-                public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    mCaptureSession = cameraCaptureSession;
+                public void onConfigured(@NonNull CameraCaptureSession session) {
+                    if (mCamera == null) {
+                        return;
+                    }
+                    mCaptureSession = session;
                     updatePreview();
                     mCallback.onVideoStarted(filePath);
 
@@ -455,6 +449,10 @@ class Camera2 extends CameraViewImpl {
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
                     // TODO: show error here
+                    Log.e(TAG, "Failed to configure capture session.");
+                    if (mCallback != null) {
+                        mCallback.onCameraStartFailed();
+                    }
                 }
             }, getBackgroundHandler());
         } catch (CameraAccessException | IOException e) {
@@ -463,15 +461,12 @@ class Camera2 extends CameraViewImpl {
     }
 
     private void updatePreview() {
-        if (null == mCamera) {
-            return;
-        }
-
         try {
             setUpCaptureRequestBuilder(mPreviewRequestBuilder);
             HandlerThread thread = new HandlerThread("CameraPreview");
             thread.start();
-            mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), null, null);
+            mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback,
+                    getBackgroundHandler());
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
