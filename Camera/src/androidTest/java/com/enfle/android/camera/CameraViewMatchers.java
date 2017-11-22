@@ -19,6 +19,9 @@ package com.enfle.android.camera;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.enfle.android.camera.utils.AspectRatio;
+import com.enfle.android.camera.view.CameraView;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;

@@ -18,6 +18,8 @@ package com.enfle.android.camera;
 
 import static org.hamcrest.CoreMatchers.either;
 
+import com.enfle.android.camera.utils.AspectRatio;
+
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;

@@ -19,6 +19,8 @@ package com.enfle.android.camera;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.enfle.android.camera.utils.Size;
+
 import org.junit.Test;
 
 import java.util.HashSet;

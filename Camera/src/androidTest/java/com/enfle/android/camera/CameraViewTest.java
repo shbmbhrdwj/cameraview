@@ -48,6 +48,8 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.enfle.android.camera.utils.AspectRatio;
+import com.enfle.android.camera.view.CameraView;
 import com.google.android.cameraview.test.R;
 
 import org.hamcrest.Matcher;
@@ -222,7 +224,7 @@ public class CameraViewTest {
         TakePictureIdlingResource resource = new TakePictureIdlingResource(
                 (CameraView) rule.getActivity().findViewById(R.id.camera));
         onView(withId(R.id.camera))
-                .perform(new AnythingAction("take picture") {
+                .perform(new AnythingAction("take mPicture") {
                     @Override
                     public void perform(UiController uiController, View view) {
                         CameraView cameraView = (CameraView) view;

@@ -16,6 +16,8 @@
 
 package com.enfle.android.camera.demo;
 
+import static com.enfle.android.camera.utils.Constants.FACING_BACK;
+import static com.enfle.android.camera.utils.Constants.FACING_FRONT;
 import static com.enfle.android.camera.demo.Constants.FLASH_ICONS;
 import static com.enfle.android.camera.demo.Constants.FLASH_OPTIONS;
 
@@ -41,18 +43,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.enfle.android.camera.AspectRatio;
+import com.enfle.android.camera.utils.AspectRatio;
 import com.enfle.android.camera.Callback;
-import com.enfle.android.camera.CameraView;
-import com.enfle.android.camera.Constants1;
+import com.enfle.android.camera.view.CameraView;
+import com.enfle.android.camera.utils.Constants;
 
 import java.io.File;
 import java.util.Set;
 
 
 /**
- * This demo app saves the taken picture to a constant file.
- * $ adb pull /sdcard/Android/data/com.google.android.cameraview.demo/files/Pictures/picture.jpg
+ * This demo app saves the taken mPicture to a constant file.
+ * $ adb pull /sdcard/Android/data/com.google.android.cameraview.demo/files/Pictures/mPicture.jpg
  */
 public class MainActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback,
@@ -65,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements
     private static final int REQUEST_CAMERA_PERMISSION = 1;
 
     private static final String FRAGMENT_DIALOG = "dialog";
-
 
     private int mCurrentFlash;
 
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mDetector = new GestureDetectorCompat(this, mOnSwipeTouchListener);
         mCameraView = (CameraView) findViewById(R.id.camera);
-        mCameraView.setVideoQuaity(Constants1.VIDEO_QUALITY_HIGHEST);
+        mCameraView.setVideoQuaity(Constants.VIDEO_QUALITY_HIGHEST);
         mCameraView.setFilePath(getVideoFilePath());
         if (mCameraView != null) {
             mCameraView.addCallback(mCallback);
@@ -206,7 +207,8 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.switch_flash:
                 if (mCameraView != null) {
                     mCurrentFlash = (mCurrentFlash + 1) % FLASH_OPTIONS.length;
-                    item.setTitle(Constants.FLASH_TITLES[mCurrentFlash]);
+                    item.setTitle(
+                            com.enfle.android.camera.demo.Constants.FLASH_TITLES[mCurrentFlash]);
                     item.setIcon(FLASH_ICONS[mCurrentFlash]);
                     mCameraView.setFlash(FLASH_OPTIONS[mCurrentFlash]);
                 }
@@ -214,8 +216,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.switch_camera:
                 if (mCameraView != null) {
                     int facing = mCameraView.getFacing();
-                    mCameraView.setFacing(facing == CameraView.FACING_FRONT ?
-                            CameraView.FACING_BACK : CameraView.FACING_FRONT);
+                    mCameraView.setFacing(facing == FACING_FRONT ? FACING_BACK : FACING_FRONT);
                 }
                 return true;
         }

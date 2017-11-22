@@ -19,6 +19,7 @@ package com.enfle.android.camera;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.enfle.android.camera.view.CameraView;
 import com.google.android.cameraview.test.R;
 
 public class CameraViewActivity extends Activity {

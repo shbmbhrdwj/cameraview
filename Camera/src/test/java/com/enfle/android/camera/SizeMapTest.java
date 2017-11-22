@@ -19,6 +19,10 @@ package com.enfle.android.camera;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.enfle.android.camera.utils.AspectRatio;
+import com.enfle.android.camera.utils.Size;
+import com.enfle.android.camera.utils.SizeMap;
+
 import org.junit.Test;
 
 public class SizeMapTest {
