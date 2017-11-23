@@ -89,15 +89,15 @@ public class Camera1 extends CameraViewImpl {
 
     public Camera1(Callback callback, PreviewImpl preview) {
         super(callback, preview);
-        preview.setCallback(new PreviewImpl.Callback() {
-            @Override
-            public void onSurfaceChanged() {
-                if (mCamera != null) {
-                    setUpPreview();
-                    adjustCameraParameters();
-                }
-            }
-        });
+        preview.setCallback(Camera1.this::onSurfaceChanged);
+    }
+
+    private void onSurfaceChanged() {
+        if (mCamera == null) {
+            return;
+        }
+        setUpPreview();
+        adjustCameraParameters();
     }
 
     @Override
@@ -123,7 +123,7 @@ public class Camera1 extends CameraViewImpl {
 
     // Suppresses Camera#setPreviewTexture
     @SuppressLint("NewApi")
-    void setUpPreview() {
+    private void setUpPreview() {
         try {
             if (mPreview.getOutputClass() == SurfaceHolder.class) {
                 final boolean needsToStopPreview = mShowingPreview && Build.VERSION.SDK_INT < 14;
@@ -242,12 +242,7 @@ public class Camera1 extends CameraViewImpl {
 
         if (getAutoFocus()) {
             mCamera.cancelAutoFocus();
-            mCamera.autoFocus(new Camera.AutoFocusCallback() {
-                @Override
-                public void onAutoFocus(boolean success, Camera camera) {
-                    takePictureInternal();
-                }
-            });
+            mCamera.autoFocus((success, camera) -> takePictureInternal());
         } else {
             takePictureInternal();
         }
@@ -255,16 +250,15 @@ public class Camera1 extends CameraViewImpl {
 
     private void takePictureInternal() {
         if (!isPictureCaptureInProgress.getAndSet(true)) {
-            mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
-                @Override
-                public void onPictureTaken(byte[] data, Camera camera) {
-                    isPictureCaptureInProgress.set(false);
-                    mCallback.onPictureTaken(data);
-                    camera.cancelAutoFocus();
-                    camera.startPreview();
-                }
-            });
+            mCamera.takePicture(null, null, null, Camera1.this::onPictureTaken);
         }
+    }
+
+    private void onPictureTaken(byte[] data, Camera camera) {
+        isPictureCaptureInProgress.set(false);
+        mCallback.onPictureTaken(data);
+        camera.cancelAutoFocus();
+        camera.startPreview();
     }
 
     @Override
@@ -273,17 +267,19 @@ public class Camera1 extends CameraViewImpl {
             return;
         }
         mDisplayOrientation = displayOrientation;
-        if (isCameraOpened()) {
-            mCameraParameters.setRotation(calcCameraRotation(displayOrientation));
-            mCamera.setParameters(mCameraParameters);
-            final boolean needsToStopPreview = mShowingPreview && Build.VERSION.SDK_INT < 14;
-            if (needsToStopPreview) {
-                mCamera.stopPreview();
-            }
-            mCamera.setDisplayOrientation(calcDisplayOrientation(displayOrientation));
-            if (needsToStopPreview) {
-                mCamera.startPreview();
-            }
+
+        if (!isCameraOpened()) {
+            return;
+        }
+        mCameraParameters.setRotation(calcCameraRotation(displayOrientation));
+        mCamera.setParameters(mCameraParameters);
+        final boolean needsToStopPreview = mShowingPreview && Build.VERSION.SDK_INT < 14;
+        if (needsToStopPreview) {
+            mCamera.stopPreview();
+        }
+        mCamera.setDisplayOrientation(calcDisplayOrientation(displayOrientation));
+        if (needsToStopPreview) {
+            mCamera.startPreview();
         }
     }
 
@@ -337,7 +333,6 @@ public class Camera1 extends CameraViewImpl {
             e.printStackTrace();
         }
     }
-
 
     /**
      * This rewrites {@link #mCameraId} and {@link #mCameraInfo}.
@@ -394,7 +389,7 @@ public class Camera1 extends CameraViewImpl {
         return r;
     }
 
-    void adjustCameraParameters() {
+    private void adjustCameraParameters() {
         SortedSet<Size> sizes = mPreviewSizes.sizes(mAspectRatio);
         if (sizes == null) { // Not supported
             mAspectRatio = chooseAspectRatio();
