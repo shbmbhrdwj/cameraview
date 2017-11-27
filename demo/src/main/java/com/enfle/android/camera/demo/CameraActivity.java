@@ -35,15 +35,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.enfle.android.camera.demo.utils.FileUtils;
 import com.enfle.android.camera.utils.AspectRatio;
 import com.enfle.android.camera.Callback;
 import com.enfle.android.camera.view.CameraView;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -197,12 +194,12 @@ public class CameraActivity extends AppCompatActivity implements AspectRatioFrag
     }
 
     private String getVideoFilePath() {
-        File photoFile = createVideoNewFile(this);
+        File photoFile = FileUtils.createVideoNewFile(this);
         return photoFile != null ? photoFile.getAbsolutePath() : null;
     }
 
     private String getImagePath() {
-        File photoFile = createImageNewFile(this);
+        File photoFile = FileUtils.createImageNewFile(this);
         return photoFile != null ? photoFile.getAbsolutePath() : null;
     }
 
@@ -478,44 +475,5 @@ public class CameraActivity extends AppCompatActivity implements AspectRatioFrag
 
     private void stopTimer() {
         mHandler.removeCallbacks(mUpdateTimeTask);
-    }
-
-    @Nullable
-    public static File createImageNewFile(@NonNull final Context context) {
-
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(
-                new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = context.getExternalFilesDir(Environment.DIRECTORY_DCIM);
-
-        File image = null;
-        try {
-            image = File.createTempFile(imageFileName,/* prefix */".jpg",/* suffix */storageDir/*
-             directory */);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
-
-    @Nullable
-    public static File createVideoNewFile(@NonNull final Context context) {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(
-                new Date());
-        String imageFileName = "MPEG" + timeStamp + "_";
-        File storageDir;
-
-        storageDir = context.getExternalFilesDir(Environment.DIRECTORY_DCIM);
-
-        File image = null;
-        try {
-            image = File.createTempFile(imageFileName,/* prefix */".mp4",/* suffix */storageDir/*
-             directory */);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
     }
 }

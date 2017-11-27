@@ -1,4 +1,3 @@
-
 package com.enfle.android.camera;
 
 import static android.content.ContentValues.TAG;

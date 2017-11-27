@@ -56,7 +56,7 @@ public class SavedState extends View.BaseSavedState {
         out.writeInt(flash);
     }
 
-    public static final Parcelable.Creator<SavedState> CREATOR = ParcelableCompat.newCreator(
+    public static final Creator<SavedState> CREATOR = ParcelableCompat.newCreator(
             new ParcelableCompatCreatorCallbacks<SavedState>() {
 
                 @Override
