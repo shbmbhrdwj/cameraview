@@ -450,7 +450,12 @@ public class CameraView extends FrameLayout {
         private void processImage(byte[] data) {
             mImageProcessor = new FileImageProcessor(getContext(), data);
             for (Callback callback : mCallbacks) {
-                callback.onPictureTaken(CameraView.this, mImageProcessor.getResult(mImpl.getFilePath()));
+                String filePath = mImageProcessor.getResult(mImpl.getFilePath());
+                if(filePath!=null) {
+                    callback.onPictureTaken(CameraView.this, filePath);
+                }else{
+                    callback.onPictureTakenFailed();
+                }
             }
         }
 

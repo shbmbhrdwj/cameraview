@@ -1,3 +1,4 @@
+
 package com.enfle.android.camera;
 
 import static android.content.ContentValues.TAG;
@@ -25,14 +26,14 @@ public class FileImageProcessor extends ImageProcessor<String> {
         if (!TextUtils.isEmpty(filePath)) {
             file = new File(filePath);
         } else {
-            file = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                    "mPicture.jpg");
+            file = new File(mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "mPicture.jpg");
         }
         OutputStream os = null;
         try {
             os = new FileOutputStream(file);
             os.write(mPicture);
             os.close();
+            return filePath;
         } catch (IOException e) {
             Log.w(TAG, "Cannot write to " + file, e);
         } finally {

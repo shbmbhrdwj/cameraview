@@ -26,12 +26,23 @@ public abstract class Callback {
     }
 
     /**
+     * Called when a camera preview failed
+     */
+    public void onCameraStartFailed() {
+
+    }
+
+    /**
      * Called when a mPicture is taken.
      *
      * @param cameraView The associated {@link CameraView}.
      * @param data       JPEG data.
      */
     public void onPictureTaken(CameraView cameraView, String data) {
+    }
+
+    public void onPictureTakenFailed() {
+
     }
 
     /**
@@ -50,10 +61,4 @@ public abstract class Callback {
      */
     public abstract void onVideoTaken(File videoFile);
 
-    /**
-     * Called when a camera preview failed
-     */
-    public void onCameraStartFailed() {
-
-    }
 }

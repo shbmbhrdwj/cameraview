@@ -41,6 +41,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
+import android.view.TextureView;
 
 import com.enfle.android.camera.utils.AspectRatio;
 import com.enfle.android.camera.utils.Size;
