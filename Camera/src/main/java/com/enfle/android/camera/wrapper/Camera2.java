@@ -222,7 +222,12 @@ public class Camera2 extends CameraViewImpl {
     public Camera2(Callback callback, PreviewImpl preview, Context context) {
         super(callback, preview);
         mCameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
-        mPreview.setCallback(this::startCaptureSession);
+        mPreview.setCallback(new PreviewImpl.Callback() {
+            @Override
+            public void onSurfaceChanged() {
+                Camera2.this.startCaptureSession();
+            }
+        });
     }
 
     @Override
@@ -386,14 +391,12 @@ public class Camera2 extends CameraViewImpl {
         CamcorderProfile camcorderProfile = getCamcorderProfile(videoQuality, Integer.parseInt(mCameraId));
 
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-        //mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 
         File mVideoFile = new File(filePath);
         mMediaRecorder.setOutputFile(mVideoFile.getAbsolutePath());
         mMediaRecorder.setVideoEncodingBitRate(VideoConfigurations.CaptureResolution.RES_1080P.getBitrate(VideoConfigurations.CaptureQuality.HIGH));
-        ;
         mMediaRecorder.setVideoFrameRate(30);
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
@@ -485,6 +488,7 @@ public class Camera2 extends CameraViewImpl {
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
+        mCallback.onVideoTaken(new File(filePath));
         filePath = null;
         start();
     }

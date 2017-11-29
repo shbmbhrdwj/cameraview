@@ -402,8 +402,8 @@ public class CameraView extends FrameLayout {
         mImpl.setFilePath(filePath);
     }
 
-    public void setVideoQuaity(int quaity) {
-        mImpl.setVideoQuality(quaity);
+    public void setVideoQuaity(int quality) {
+        mImpl.setVideoQuality(quality);
     }
 
     public class CallbackBridge implements CameraViewImpl.Callback {
@@ -443,7 +443,12 @@ public class CameraView extends FrameLayout {
 
         @Override
         public void onPictureTaken(final byte[] data) {
-            getBackgroundHandler().post(() -> processImage(data));
+            getBackgroundHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    CallbackBridge.this.processImage(data);
+                }
+            });
 
         }
 

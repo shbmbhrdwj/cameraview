@@ -82,14 +82,18 @@ public class Camera1 extends CameraViewImpl {
     private int mDisplayOrientation;
 
     private MediaRecorder mMediaRecorder;
-    private File mVideoFile;
 
     @VideoQuality
     private int mVideoQuality = Constants.DEFAULT_VIDEO_QUALITY;
 
     public Camera1(Callback callback, PreviewImpl preview) {
         super(callback, preview);
-        preview.setCallback(Camera1.this::onSurfaceChanged);
+        preview.setCallback(new PreviewImpl.Callback() {
+            @Override
+            public void onSurfaceChanged() {
+                Camera1.this.onSurfaceChanged();
+            }
+        });
     }
 
     private void onSurfaceChanged() {
@@ -242,7 +246,12 @@ public class Camera1 extends CameraViewImpl {
 
         if (getAutoFocus()) {
             mCamera.cancelAutoFocus();
-            mCamera.autoFocus((success, camera) -> takePictureInternal());
+            mCamera.autoFocus(new Camera.AutoFocusCallback() {
+                @Override
+                public void onAutoFocus(boolean success, Camera camera) {
+                    Camera1.this.takePictureInternal();
+                }
+            });
         } else {
             takePictureInternal();
         }
@@ -250,7 +259,12 @@ public class Camera1 extends CameraViewImpl {
 
     private void takePictureInternal() {
         if (!isPictureCaptureInProgress.getAndSet(true)) {
-            mCamera.takePicture(null, null, null, Camera1.this::onPictureTaken);
+            mCamera.takePicture(null, null, null, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    Camera1.this.onPictureTaken(data, camera);
+                }
+            });
         }
     }
 
@@ -288,6 +302,7 @@ public class Camera1 extends CameraViewImpl {
         initMediaRecorder();
         prepareMediaRecorder();
         mMediaRecorder.start();
+        mCallback.onVideoStarted(filePath);
     }
 
     @Override
@@ -295,7 +310,7 @@ public class Camera1 extends CameraViewImpl {
         mMediaRecorder.stop();
         mMediaRecorder.release();
         mMediaRecorder = null;
-        mCallback.onVideoTaken(mVideoFile);
+        mCallback.onVideoTaken(new File(filePath));
     }
 
     private void initMediaRecorder() {
@@ -309,8 +324,8 @@ public class Camera1 extends CameraViewImpl {
 
         mMediaRecorder.setProfile(getCamcorderProfile(mVideoQuality, mCameraId));
 
-        mVideoFile = new File(filePath);
-        mMediaRecorder.setOutputFile(mVideoFile.getAbsolutePath());
+        File videoFile = new File(filePath);
+        mMediaRecorder.setOutputFile(videoFile.getAbsolutePath());
         mMediaRecorder.setOrientationHint(calculatePreviewRotation());
         final Size pictureSize = mPictureSizes.sizes(mAspectRatio).last();
         mMediaRecorder.setVideoSize(pictureSize.getWidth(), pictureSize.getHeight());
