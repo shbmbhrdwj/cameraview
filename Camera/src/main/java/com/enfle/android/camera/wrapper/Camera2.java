@@ -488,6 +488,7 @@ public class Camera2 extends CameraViewImpl {
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
+        mMediaRecorder.release();
         mCallback.onVideoTaken(new File(filePath));
         filePath = null;
         start();
