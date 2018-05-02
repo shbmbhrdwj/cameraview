@@ -486,8 +486,9 @@ class Camera2 extends CameraViewImpl {
         // Stop recording
         mMediaRecorder.stop();
         mMediaRecorder.reset();
+        mMediaRecorder.release();
         filePath = null;
-        start();
+//        start();
     }
 
     /**
