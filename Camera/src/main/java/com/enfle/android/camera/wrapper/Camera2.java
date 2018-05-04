@@ -491,7 +491,6 @@ public class Camera2 extends CameraViewImpl {
         mMediaRecorder.release();
         mCallback.onVideoTaken(new File(filePath));
         filePath = null;
-        start();
     }
 
     /**
