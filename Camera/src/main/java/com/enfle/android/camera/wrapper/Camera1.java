@@ -69,6 +69,8 @@ public class Camera1 extends CameraViewImpl {
 
     private final SizeMap mPictureSizes = new SizeMap();
 
+    private final SizeMap mVideoSizes = new SizeMap();
+
     private AspectRatio mAspectRatio;
 
     private boolean mShowingPreview;
@@ -327,8 +329,13 @@ public class Camera1 extends CameraViewImpl {
         File videoFile = new File(filePath);
         mMediaRecorder.setOutputFile(videoFile.getAbsolutePath());
         mMediaRecorder.setOrientationHint(calculatePreviewRotation());
-        final Size pictureSize = mPictureSizes.sizes(mAspectRatio).last();
-        mMediaRecorder.setVideoSize(pictureSize.getWidth(), pictureSize.getHeight());
+        final Size videoSize;
+        if (!mVideoSizes.isEmpty()) {
+            videoSize = mVideoSizes.sizes(mAspectRatio).last();
+        } else {
+            videoSize = mPreviewSizes.sizes(mAspectRatio).last();
+        }
+        mMediaRecorder.setVideoSize(videoSize.getWidth(), videoSize.getHeight());
     }
 
     private int calculatePreviewRotation() {
@@ -381,6 +388,14 @@ public class Camera1 extends CameraViewImpl {
         mPictureSizes.clear();
         for (Camera.Size size : mCameraParameters.getSupportedPictureSizes()) {
             mPictureSizes.add(new Size(size.width, size.height));
+        }
+
+        //Supported mVideo sizes;
+        mVideoSizes.clear();
+        if (mCameraParameters.getSupportedVideoSizes() != null) {
+            for (Camera.Size size : mCameraParameters.getSupportedVideoSizes()) {
+                mVideoSizes.add(new Size(size.width, size.height));
+            }
         }
 
         // AspectRatio
